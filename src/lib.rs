@@ -8,3 +8,4 @@ extern crate num_bigint;
 
 pub mod int;
 pub mod num_sys;
+pub mod est;
