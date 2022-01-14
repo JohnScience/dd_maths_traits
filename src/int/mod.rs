@@ -1,10 +1,10 @@
 //! Integer traits.
-//! 
+//!
 //! Many (if not all) traits provided by this module are
 //! [marker traits](https://blog.logrocket.com/rust-traits-a-deep-dive/#:~:text=marker%20traits).
-//! 
+//!
 //! # What are marker traits?
-//! 
+//!
 //! Marker traits, such as [core::marker::Sized] or [core::marker::Sync], are the traits that
 //! don't have any behaviour (=shared methods) but give the compiler (and the developers)
 //! certain guarantees. Such design choice allows to disambiguate the intended behavior for
@@ -13,16 +13,16 @@
 
 pub mod compat;
 
-/// A [marker trait](https://blog.logrocket.com/rust-traits-a-deep-dive/#:~:text=marker%20traits) 
+/// A [marker trait](https://blog.logrocket.com/rust-traits-a-deep-dive/#:~:text=marker%20traits)
 /// indicating that the type models some subset of integers that is representable on the computer
 /// (possibly, depending on the available resources of the given computer), i.e. either
 /// [FixedSizeIntSubset] or [ArbitrarySizeIntSubset].
-/// 
+///
 /// Notice that there might be no intuitive notion of
 /// * "next" element in the subset;
 /// * [additive inverse](https://en.wikipedia.org/wiki/Additive_inverse);
 /// * or anything that one can expect from an integer type;
-/// and that there are no guarantees that the [inhabitants](https://alexknvl.com/posts/counting-type-inhabitants.html) 
+/// and that there are no guarantees that the [inhabitants](https://alexknvl.com/posts/counting-type-inhabitants.html)
 /// of the type can be
 /// * represented uniquely;
 /// * queried for either [multiplicative](https://www.merriam-webster.com/dictionary/multiplicative%20identity)
@@ -30,28 +30,28 @@ pub mod compat;
 /// * checked for being either identity;
 /// * believed to correspond to the same integers regardless of some state;
 /// * assumed to contain any strictly positive elements, any strictly negative elements, or zero.
-/// 
+///
 /// However, IF addition and multiplication are defined, additive identity of the implementer must also be the
 /// [asbosring element](https://en.wikipedia.org/wiki/Absorbing_element) for multiplication.
-/// 
+///
 /// Reading the [int::compat][crate::int::compat] module docs before implementation is **required**.
 pub trait IntSubset {}
 
-/// A [marker trait](https://blog.logrocket.com/rust-traits-a-deep-dive/#:~:text=marker%20traits) 
+/// A [marker trait](https://blog.logrocket.com/rust-traits-a-deep-dive/#:~:text=marker%20traits)
 /// indicating that the type models some subset of integers s.t. each of them has size (not necessarily
 /// on the stack) known at compile-time and identical for all inhabitants of the type.
-/// 
+///
 /// Notice that the combination of [core::marker::Sized] and [IntSubset] does not guarantee
 /// that the type implements [FixedSizeIntSubset] because [core::marker::Sized] takes into account
 /// only [shallow size](https://dzone.com/articles/shallow-retained-and-deep-size).
-/// 
+///
 /// ```rust
 /// # struct T;
 /// # fn main() {
 /// assert_eq!(core::mem::size_of::<Box<T>>(), core::mem::size_of::<*const T>());
 /// # }
 /// ```
-/// 
+///
 /// Reading the [int::compat][crate::int::compat] module docs before implementation is **required**.
 pub trait FixedSizeIntSubset: Sized {}
 
@@ -76,11 +76,11 @@ compat::impl_fixed_size_int_subset!(u128);
 compat::impl_fixed_size_int_subset!(isize);
 compat::impl_fixed_size_int_subset!(usize);
 
-/// A [marker trait](https://blog.logrocket.com/rust-traits-a-deep-dive/#:~:text=marker%20traits) 
+/// A [marker trait](https://blog.logrocket.com/rust-traits-a-deep-dive/#:~:text=marker%20traits)
 /// indicating that the type models some subset of integers with the
 /// [shallow, retained, or deep size](https://dzone.com/articles/shallow-retained-and-deep-size)
 /// unknown at compile-time.
-/// 
+///
 /// Reading the [int::compat][crate::int::compat] module docs before implementation is **required**.
 pub trait ArbitrarySizeIntSubset {}
 
