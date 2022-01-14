@@ -24,7 +24,9 @@ pub struct BoundsKinds {
 
 pub struct Range<T, const BOUNDS_KINDS: BoundsKinds>(Bounds<T>);
 
-pub enum ClosedIntvl<T> {
-    Exact(T),
-    ClosedIntvl(Bounds<T>),
-}
+const CLOSED_INTVL_BOUNDS_KINDS: BoundsKinds = BoundsKinds {
+    lower_bound_kind: BoundKind::Closed,
+    upper_bound_kind: BoundKind::Closed,
+};
+
+pub type ClosedIntvl<T> = Range<T, CLOSED_INTVL_BOUNDS_KINDS>;
