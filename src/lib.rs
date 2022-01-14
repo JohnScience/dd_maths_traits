@@ -7,6 +7,6 @@
 #[cfg(any(doc, test, doctest, feature = "num-bigint"))]
 extern crate num_bigint;
 
-pub mod intvl;
+pub mod ranges;
 pub mod int;
 pub mod num_sys;
