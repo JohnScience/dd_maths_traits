@@ -15,6 +15,7 @@ impl<T> ToCanonicalRepresentationBase10AsString for T
 where
     T: PrimInt + ToString,
 {
+    #[inline(always)]
     fn to_canonical_representation_base_10_as_string(&self) -> String {
         self.to_string()
     }
