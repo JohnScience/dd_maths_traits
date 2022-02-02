@@ -2,6 +2,7 @@
 // negative impls because currently (Rust 1.57.0) there is no way to provide guarantee
 // that T doesn't implement ArbitrarySizeIntSubset. At the time of writing, negative trait
 // bounds are unavailable.
+#[cfg(any(doc, test, doctest, feature = "decl_macro"))]
 macro impl_get_last_digit_as_u8_for_prim_signed_int($t:ty) {
     impl crate::num_sys::GetLastDigitAsU8 for $t {
         fn get_last_digit_as_u8(&self) -> u8 {
@@ -15,10 +16,27 @@ macro impl_get_last_digit_as_u8_for_prim_signed_int($t:ty) {
     }
 }
 
+#[cfg(not(any(doc, test, doctest, feature = "decl_macro")))]
+macro_rules! impl_get_last_digit_as_u8_for_prim_signed_int {
+    ($t:ty) => {
+        impl crate::num_sys::GetLastDigitAsU8 for $t {
+            fn get_last_digit_as_u8(&self) -> u8 {
+                const DEFAULT_RADIX: $t = 10;
+                let rem: $t = self % DEFAULT_RADIX;
+                // The line below is necessary only for signed integers
+                let last_digit: $t = if rem < 0 { -rem } else { rem };
+                // unwrap is safe because last_digit < 10
+                last_digit.try_into().unwrap()
+            }
+        }
+    };
+}
+
 // Implementation of the trait via generic impl block doesn't play nicely with
 // negative impls because currently (Rust 1.57.0) there is no way to provide guarantee
 // that T doesn't implement ArbitrarySizeIntSubset. At the time of writing, negative trait
 // bounds are unavailable.
+#[cfg(any(doc, test, doctest, feature = "decl_macro"))]
 macro impl_get_last_digit_as_u8_for_prim_unsigned_int($t:ty) {
     impl crate::num_sys::GetLastDigitAsU8 for $t {
         fn get_last_digit_as_u8(&self) -> u8 {
@@ -28,6 +46,20 @@ macro impl_get_last_digit_as_u8_for_prim_unsigned_int($t:ty) {
             rem.try_into().unwrap()
         }
     }
+}
+
+#[cfg(not(any(doc, test, doctest, feature = "decl_macro")))]
+macro_rules! impl_get_last_digit_as_u8_for_prim_unsigned_int {
+    ($t:ty) => {
+        impl crate::num_sys::GetLastDigitAsU8 for $t {
+            fn get_last_digit_as_u8(&self) -> u8 {
+                const DEFAULT_RADIX: $t = 10;
+                let rem: $t = self % DEFAULT_RADIX;
+                // unwrap is safe because last_digit < 10
+                rem.try_into().unwrap()
+            }
+        }
+    };
 }
 
 impl_get_last_digit_as_u8_for_prim_signed_int!(i8);

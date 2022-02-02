@@ -32,4 +32,18 @@ num-bigint = { version ="0.4.3", optional = true }
 num-bigint = { version = "*" }
 
 [features]
+all = ["std", "bigint", "nightly"]
+
 std = []
+bigint = ["num-bigint"]
+nightly = ["adt_const_params", "negative_impls", "const_trait_impl", "decl_macro"]
+
+adt_const_params = []
+negative_impls = []
+const_trait_impl = []
+decl_macro = []
+
+[package.metadata.docs.rs]
+features = ["all"]
+# https://github.com/RustCrypto/traits/blob/941614d788506abc893508405bcdd683aa9cb58c/elliptic-curve/Cargo.toml#L64
+rustdoc-args = ["--cfg", "docsrs"]

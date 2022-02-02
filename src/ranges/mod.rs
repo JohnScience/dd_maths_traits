@@ -22,11 +22,16 @@ pub struct BoundsKinds {
     upper_bound_kind: BoundKind,
 }
 
+#[cfg_attr(docsrs, doc(cfg(feature = "adt_const_params")))]
+#[cfg(any(doc, test, doctest, feature = "adt_const_params"))]
 pub struct Range<T, const BOUNDS_KINDS: BoundsKinds>(Bounds<T>);
 
+#[cfg(any(doc, test, doctest, feature = "adt_const_params"))]
 const CLOSED_INTVL_BOUNDS_KINDS: BoundsKinds = BoundsKinds {
     lower_bound_kind: BoundKind::Closed,
     upper_bound_kind: BoundKind::Closed,
 };
 
+#[cfg_attr(docsrs, doc(cfg(feature = "adt_const_params")))]
+#[cfg(any(doc, test, doctest, feature = "adt_const_params"))]
 pub type ClosedIntvl<T> = Range<T, CLOSED_INTVL_BOUNDS_KINDS>;

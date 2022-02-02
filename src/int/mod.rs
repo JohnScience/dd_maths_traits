@@ -55,6 +55,8 @@ pub trait IntSubset {}
 /// Reading the [int::compat][crate::int::compat] module docs before implementation is **required**.
 pub trait FixedSizeIntSubset: Sized {}
 
+#[cfg_attr(docsrs, doc(cfg(feature = "negative_impls")))]
+#[cfg(any(doc, test, doctest, feature = "negative_impls"))]
 // [Negative impl](https://doc.rust-lang.org/beta/unstable-book/language-features/negative-impls.html)
 // is used to convey the [dichotomy](https://en.wikipedia.org/wiki/Dichotomy) of the [IntSubset] trait.
 impl<T: FixedSizeIntSubset> !ArbitrarySizeIntSubset for T {}
@@ -63,17 +65,29 @@ impl<T: FixedSizeIntSubset> !ArbitrarySizeIntSubset for T {}
 // negative impls because currently (Rust 1.57.0) there is no way to provide guarantee
 // that T doesn't implement ArbitrarySizeIntSubset. At the time of writing, negative trait
 // bounds are unavailable.
+#[cfg(any(doc, test, doctest, feature = "decl_macro"))]
 compat::impl_fixed_size_int_subset!(i8);
+#[cfg(any(doc, test, doctest, feature = "decl_macro"))]
 compat::impl_fixed_size_int_subset!(u8);
+#[cfg(any(doc, test, doctest, feature = "decl_macro"))]
 compat::impl_fixed_size_int_subset!(i16);
+#[cfg(any(doc, test, doctest, feature = "decl_macro"))]
 compat::impl_fixed_size_int_subset!(u16);
+#[cfg(any(doc, test, doctest, feature = "decl_macro"))]
 compat::impl_fixed_size_int_subset!(i32);
+#[cfg(any(doc, test, doctest, feature = "decl_macro"))]
 compat::impl_fixed_size_int_subset!(u32);
+#[cfg(any(doc, test, doctest, feature = "decl_macro"))]
 compat::impl_fixed_size_int_subset!(i64);
+#[cfg(any(doc, test, doctest, feature = "decl_macro"))]
 compat::impl_fixed_size_int_subset!(u64);
+#[cfg(any(doc, test, doctest, feature = "decl_macro"))]
 compat::impl_fixed_size_int_subset!(i128);
+#[cfg(any(doc, test, doctest, feature = "decl_macro"))]
 compat::impl_fixed_size_int_subset!(u128);
+#[cfg(any(doc, test, doctest, feature = "decl_macro"))]
 compat::impl_fixed_size_int_subset!(isize);
+#[cfg(any(doc, test, doctest, feature = "decl_macro"))]
 compat::impl_fixed_size_int_subset!(usize);
 
 /// A [marker trait](https://blog.logrocket.com/rust-traits-a-deep-dive/#:~:text=marker%20traits)
@@ -84,4 +98,6 @@ compat::impl_fixed_size_int_subset!(usize);
 /// Reading the [int::compat][crate::int::compat] module docs before implementation is **required**.
 pub trait ArbitrarySizeIntSubset {}
 
+#[cfg_attr(docsrs, doc(cfg(feature = "negative_impls")))]
+#[cfg(any(doc, test, doctest, feature = "negative_impls"))]
 impl<T: ArbitrarySizeIntSubset> !FixedSizeIntSubset for T {}
