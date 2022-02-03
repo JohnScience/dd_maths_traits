@@ -90,6 +90,25 @@ compat::impl_fixed_size_int_subset!(isize);
 #[cfg(any(doc, test, doctest, feature = "decl_macro"))]
 compat::impl_fixed_size_int_subset!(usize);
 
+#[cfg(not(any(doc, test, doctest, feature = "decl_macro")))]
+macro_rules! impl_fixed_size_int_subset {
+    (@PRIM_INTS) => {
+        impl_fixed_size_int_subset!([u8,u16,u32,u64,u128,usize,i8,i16,i32,i64,i128,isize]);
+    };
+    ([$($t:ty),+]) => {
+        $(
+            impl_fixed_size_int_subset!($t);
+        )+
+    };
+    ($t:ty) => {
+        impl FixedSizeIntSubset for $t {}
+        impl IntSubset for $t {}
+    };
+}
+
+#[cfg(not(any(doc, test, doctest, feature = "decl_macro")))]
+impl_fixed_size_int_subset!(@PRIM_INTS);
+
 /// A [marker trait](https://blog.logrocket.com/rust-traits-a-deep-dive/#:~:text=marker%20traits)
 /// indicating that the type models some subset of integers with the
 /// [shallow, retained, or deep size](https://dzone.com/articles/shallow-retained-and-deep-size)
