@@ -42,15 +42,7 @@
 //! is possible at least in nightly Rust.
 
 /// View the documentation for [this module][crate::int::compat].
-#[cfg(any(doc, test, doctest, feature = "decl_macro"))]
-pub macro impl_arbitrary_size_int_subset($t:ty) {
-    impl super::ArbitrarySizeIntSubset for $t {}
-    impl super::IntSubset for $t {}
-}
+pub use dd_maths_traits_macros::impl_fixed_size_int_subset;
 
 /// View the documentation for [this module][crate::int::compat].
-#[cfg(any(doc, test, doctest, feature = "decl_macro"))]
-pub macro impl_fixed_size_int_subset($t:ty) {
-    impl super::FixedSizeIntSubset for $t {}
-    impl super::IntSubset for $t {}
-}
+pub use dd_maths_traits_macros::impl_arbitrary_size_int_subset;

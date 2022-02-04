@@ -35,7 +35,9 @@ pub mod compat;
 /// [asbosring element](https://en.wikipedia.org/wiki/Absorbing_element) for multiplication.
 ///
 /// Reading the [int::compat][crate::int::compat] module docs before implementation is **required**.
-pub trait IntSubset {}
+pub trait IntSubset {
+    const IS_FIXED_SIZE: bool;
+}
 
 /// A [marker trait](https://blog.logrocket.com/rust-traits-a-deep-dive/#:~:text=marker%20traits)
 /// indicating that the type models some subset of integers s.t. each of them has size (not necessarily
@@ -65,48 +67,18 @@ impl<T: FixedSizeIntSubset> !ArbitrarySizeIntSubset for T {}
 // negative impls because currently (Rust 1.57.0) there is no way to provide guarantee
 // that T doesn't implement ArbitrarySizeIntSubset. At the time of writing, negative trait
 // bounds are unavailable.
-#[cfg(any(doc, test, doctest, feature = "decl_macro"))]
-compat::impl_fixed_size_int_subset!(i8);
-#[cfg(any(doc, test, doctest, feature = "decl_macro"))]
-compat::impl_fixed_size_int_subset!(u8);
-#[cfg(any(doc, test, doctest, feature = "decl_macro"))]
-compat::impl_fixed_size_int_subset!(i16);
-#[cfg(any(doc, test, doctest, feature = "decl_macro"))]
-compat::impl_fixed_size_int_subset!(u16);
-#[cfg(any(doc, test, doctest, feature = "decl_macro"))]
-compat::impl_fixed_size_int_subset!(i32);
-#[cfg(any(doc, test, doctest, feature = "decl_macro"))]
-compat::impl_fixed_size_int_subset!(u32);
-#[cfg(any(doc, test, doctest, feature = "decl_macro"))]
-compat::impl_fixed_size_int_subset!(i64);
-#[cfg(any(doc, test, doctest, feature = "decl_macro"))]
-compat::impl_fixed_size_int_subset!(u64);
-#[cfg(any(doc, test, doctest, feature = "decl_macro"))]
-compat::impl_fixed_size_int_subset!(i128);
-#[cfg(any(doc, test, doctest, feature = "decl_macro"))]
-compat::impl_fixed_size_int_subset!(u128);
-#[cfg(any(doc, test, doctest, feature = "decl_macro"))]
-compat::impl_fixed_size_int_subset!(isize);
-#[cfg(any(doc, test, doctest, feature = "decl_macro"))]
-compat::impl_fixed_size_int_subset!(usize);
 
-#[cfg(not(any(doc, test, doctest, feature = "decl_macro")))]
 macro_rules! impl_fixed_size_int_subset {
     (@PRIM_INTS) => {
         impl_fixed_size_int_subset!([u8,u16,u32,u64,u128,usize,i8,i16,i32,i64,i128,isize]);
     };
     ([$($t:ty),+]) => {
         $(
-            impl_fixed_size_int_subset!($t);
+            compat::impl_fixed_size_int_subset!($t);
         )+
-    };
-    ($t:ty) => {
-        impl FixedSizeIntSubset for $t {}
-        impl IntSubset for $t {}
     };
 }
 
-#[cfg(not(any(doc, test, doctest, feature = "decl_macro")))]
 impl_fixed_size_int_subset!(@PRIM_INTS);
 
 /// A [marker trait](https://blog.logrocket.com/rust-traits-a-deep-dive/#:~:text=marker%20traits)

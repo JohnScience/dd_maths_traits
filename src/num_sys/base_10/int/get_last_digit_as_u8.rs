@@ -2,113 +2,66 @@
 // negative impls because currently (Rust 1.57.0) there is no way to provide guarantee
 // that T doesn't implement ArbitrarySizeIntSubset. At the time of writing, negative trait
 // bounds are unavailable.
-#[cfg(any(doc, test, doctest, feature = "decl_macro"))]
-macro impl_get_last_digit_as_u8_for_prim_signed_int($t:ty) {
-    impl crate::num_sys::GetLastDigitAsU8 for $t {
+macro_rules! impl_get_last_digit_as_u8 {
+    () => {
         fn get_last_digit_as_u8(&self) -> u8 {
-            const DEFAULT_RADIX: $t = 10;
-            let rem: $t = self % DEFAULT_RADIX;
-            // The line below is necessary only for signed integers
-            let last_digit: $t = if rem < 0 { -rem } else { rem };
-            // unwrap is safe because last_digit < 10
-            last_digit.try_into().unwrap()
-        }
-    }
-}
-
-#[cfg(not(any(doc, test, doctest, feature = "decl_macro")))]
-macro_rules! impl_get_last_digit_as_u8_for_prim_signed_int {
-    ($t:ty) => {
-        impl crate::num_sys::GetLastDigitAsU8 for $t {
-            fn get_last_digit_as_u8(&self) -> u8 {
-                const DEFAULT_RADIX: $t = 10;
-                let rem: $t = self % DEFAULT_RADIX;
-                // The line below is necessary only for signed integers
-                let last_digit: $t = if rem < 0 { -rem } else { rem };
-                // unwrap is safe because last_digit < 10
-                last_digit.try_into().unwrap()
-            }
+            use crate::num_sys::base_10::GetLastDigitBase10AsU8;
+            
+            self.get_last_digit_base_10_as_u8()
         }
     };
 }
 
-// Implementation of the trait via generic impl block doesn't play nicely with
-// negative impls because currently (Rust 1.57.0) there is no way to provide guarantee
-// that T doesn't implement ArbitrarySizeIntSubset. At the time of writing, negative trait
-// bounds are unavailable.
-#[cfg(any(doc, test, doctest, feature = "decl_macro"))]
-macro impl_get_last_digit_as_u8_for_prim_unsigned_int($t:ty) {
-    impl crate::num_sys::GetLastDigitAsU8 for $t {
-        fn get_last_digit_as_u8(&self) -> u8 {
-            const DEFAULT_RADIX: $t = 10;
-            let rem: $t = self % DEFAULT_RADIX;
-            // unwrap is safe because last_digit < 10
-            rem.try_into().unwrap()
-        }
-    }
-}
-
-#[cfg(not(any(doc, test, doctest, feature = "decl_macro")))]
-macro_rules! impl_get_last_digit_as_u8_for_prim_unsigned_int {
-    ($t:ty) => {
-        impl crate::num_sys::GetLastDigitAsU8 for $t {
-            fn get_last_digit_as_u8(&self) -> u8 {
-                const DEFAULT_RADIX: $t = 10;
-                let rem: $t = self % DEFAULT_RADIX;
-                // unwrap is safe because last_digit < 10
-                rem.try_into().unwrap()
-            }
+#[cfg(any(doc, test, doctest, all(feature = "const_trait_impl", feature = "const_ops")))]
+macro_rules! impl_trait_for_t {
+    ($trait:path, $t:ty, $fn_macro_name:ident) => {
+        impl const $trait for $t {
+            $fn_macro_name!();
         }
     };
 }
 
-impl_get_last_digit_as_u8_for_prim_signed_int!(i8);
-impl_get_last_digit_as_u8_for_prim_signed_int!(i16);
-impl_get_last_digit_as_u8_for_prim_signed_int!(i32);
-impl_get_last_digit_as_u8_for_prim_signed_int!(i64);
-impl_get_last_digit_as_u8_for_prim_signed_int!(i128);
-impl_get_last_digit_as_u8_for_prim_signed_int!(isize);
+#[cfg(not(any(doc, test, doctest, all(feature = "const_trait_impl", feature = "const_ops"))))]
+macro_rules! impl_trait_for_t {
+    ($trait:path, $t:ty, $fn_macro_name:ident) => {
+        impl $trait for $t {
+            $fn_macro_name!();
+        }
+    };
+}
 
-impl_get_last_digit_as_u8_for_prim_unsigned_int!(u8);
-impl_get_last_digit_as_u8_for_prim_unsigned_int!(u16);
-impl_get_last_digit_as_u8_for_prim_unsigned_int!(u32);
-impl_get_last_digit_as_u8_for_prim_unsigned_int!(u64);
-impl_get_last_digit_as_u8_for_prim_unsigned_int!(u128);
-impl_get_last_digit_as_u8_for_prim_unsigned_int!(usize);
+macro_rules! impl_trait {
+    ($trait:path, @PRIM_INTS, $fn_macro_name:ident) => {
+        impl_trait!($trait, [u8,u16,u32,u64,u128,usize,i8,i16,i32,i64,i128,isize], $fn_macro_name);
+    };
+    ($trait:path, [$($t:ty),+], $fn_macro_name:ident) => {
+        $(
+            impl_trait_for_t!($trait, $t, $fn_macro_name);
+        )+
+    };
+}
+
+impl_trait!(crate::num_sys::GetLastDigitAsU8, @PRIM_INTS, impl_get_last_digit_as_u8);
 
 // TODO: decompose the function and maybe share the results with the library authors
 // TODO: track https://github.com/rust-num/num-bigint/issues/233
 #[cfg(any(doc, test, doctest, feature = "num-bigint"))]
 impl crate::num_sys::GetLastDigitAsU8 for num_bigint::BigUint {
+    #[inline]
     fn get_last_digit_as_u8(&self) -> u8 {
-        const DEFAULT_RADIX: u8 = 10;
-        // Unfortunately, the library doesn't offer a way to return the remainder
-        // of the divisor's type even for primitive integers.
-        let rem: Self = self % DEFAULT_RADIX;
-        let rem: u32 = {
-            let least_significant_digit: u32 = {
-                // TODO: contact the library authors to make endianness explicit. Read more about endianness:
-                // https://en.wikipedia.org/wiki/Endianness
-                let mut le_iter_u32 = rem.iter_u32_digits();
-                le_iter_u32
-                    .next()
-                    // integers always have at least one digit
-                    .unwrap()
-            };
-            least_significant_digit
-        };
-        let rem: u8 = rem
-            .try_into()
-            // that number is the remainder of divison by 10 and therefore < 10 < 256
-            .unwrap();
-        rem
+        use crate::num_sys::base_10::GetLastDigitBase10AsU8;
+        
+        self.get_last_digit_base_10_as_u8()
     }
 }
 
 #[cfg(any(doc, test, doctest, feature = "num-bigint"))]
 impl crate::num_sys::GetLastDigitAsU8 for num_bigint::BigInt {
+    #[inline]
     fn get_last_digit_as_u8(&self) -> u8 {
-        self.magnitude().get_last_digit_as_u8()
+        use crate::num_sys::base_10::GetLastDigitBase10AsU8;
+
+        self.get_last_digit_base_10_as_u8()
     }
 }
 

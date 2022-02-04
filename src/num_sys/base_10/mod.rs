@@ -21,6 +21,10 @@ where
     }
 }
 
+pub trait GetLastDigitBase10AsU8 {
+    fn get_last_digit_base_10_as_u8(&self) -> u8;
+}
+
 #[cfg(test)]
 pub mod tests {
     use crate::num_sys::base_10::ToCanonicalRepresentationBase10AsString;

@@ -1,6 +1,6 @@
 [package]
 name = "dd_maths_traits"
-version = "0.1.7"
+version = "0.1.8"
 authors = ["Dmitrii Demenev <demenev.dmitriy1@gmail.com>"]
 edition = "2021"
 # rust-version = "1.59.0" https://github.com/foresterre/cargo-msrv/issues/244
@@ -27,6 +27,7 @@ autobenches = false
 [dependencies]
 num-traits = "0.2.14"
 num-bigint = { version ="0.4.3", optional = true }
+dd_maths_traits_macros = { version = "0.1.0" }
 
 [dev-dependencies]
 num-bigint = { version = "0.4.3" }
@@ -36,12 +37,13 @@ all = ["std", "bigint", "nightly"]
 
 std = []
 bigint = ["num-bigint"]
-nightly = ["adt_const_params", "negative_impls", "const_trait_impl", "decl_macro"]
+nightly = ["adt_const_params", "negative_impls", "const_trait_impl", "decl_macro", "const_ops"]
 
 adt_const_params = []
 negative_impls = []
 const_trait_impl = []
 decl_macro = []
+const_ops = []
 
 [package.metadata.docs.rs]
 features = ["all"]
