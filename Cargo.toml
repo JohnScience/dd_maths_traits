@@ -28,6 +28,10 @@ autobenches = false
 num-traits = "0.2.14"
 num-bigint = { version ="0.4.3", optional = true }
 dd_maths_traits_macros = { version = "0.1.0" }
+min_max_traits = { version = "0.1.0"}
+max_len_base_10_as_usize = { version = "0.1.0" }
+is_signed_trait = { version = "0.1.0" }
+take-until = { version = "0.1.0" }
 
 [dev-dependencies]
 num-bigint = { version = "0.4.3" }

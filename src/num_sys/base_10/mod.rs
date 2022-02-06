@@ -1,5 +1,8 @@
 pub mod int;
 
+mod ten;
+pub use ten::Ten;
+
 #[cfg(any(doc, test, doctest, feature = "std"))]
 use num_traits::PrimInt;
 #[cfg(any(doc, test, doctest, feature = "std"))]
