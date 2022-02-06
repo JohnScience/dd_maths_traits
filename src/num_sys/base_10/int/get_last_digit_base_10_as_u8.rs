@@ -20,7 +20,12 @@ macro_rules! impl_get_last_digit_base_10_as_u8_for_prim_unsigned_int {
     };
 }
 
-#[cfg(any(doc, test, doctest, all(feature = "const_trait_impl", feature = "const_ops")))]
+#[cfg(any(
+    doc,
+    test,
+    doctest,
+    all(feature = "const_trait_impl", feature = "const_ops")
+))]
 macro_rules! impl_trait_for_t {
     ($trait:path, $t:ty, $fn_macro_name:ident) => {
         impl const $trait for $t {
@@ -29,7 +34,12 @@ macro_rules! impl_trait_for_t {
     };
 }
 
-#[cfg(not(any(doc, test, doctest, all(feature = "const_trait_impl", feature = "const_ops"))))]
+#[cfg(not(any(
+    doc,
+    test,
+    doctest,
+    all(feature = "const_trait_impl", feature = "const_ops")
+)))]
 macro_rules! impl_trait_for_t {
     ($trait:path, $t:ty, $fn_macro_name:ident) => {
         impl $trait for $t {

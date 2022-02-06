@@ -6,13 +6,18 @@ macro_rules! impl_get_last_digit_as_u8 {
     () => {
         fn get_last_digit_as_u8(&self) -> u8 {
             use crate::num_sys::base_10::GetLastDigitBase10AsU8;
-            
+
             self.get_last_digit_base_10_as_u8()
         }
     };
 }
 
-#[cfg(any(doc, test, doctest, all(feature = "const_trait_impl", feature = "const_ops")))]
+#[cfg(any(
+    doc,
+    test,
+    doctest,
+    all(feature = "const_trait_impl", feature = "const_ops")
+))]
 macro_rules! impl_trait_for_t {
     ($trait:path, $t:ty, $fn_macro_name:ident) => {
         impl const $trait for $t {
@@ -21,7 +26,12 @@ macro_rules! impl_trait_for_t {
     };
 }
 
-#[cfg(not(any(doc, test, doctest, all(feature = "const_trait_impl", feature = "const_ops"))))]
+#[cfg(not(any(
+    doc,
+    test,
+    doctest,
+    all(feature = "const_trait_impl", feature = "const_ops")
+)))]
 macro_rules! impl_trait_for_t {
     ($trait:path, $t:ty, $fn_macro_name:ident) => {
         impl $trait for $t {
@@ -50,7 +60,7 @@ impl crate::num_sys::GetLastDigitAsU8 for num_bigint::BigUint {
     #[inline]
     fn get_last_digit_as_u8(&self) -> u8 {
         use crate::num_sys::base_10::GetLastDigitBase10AsU8;
-        
+
         self.get_last_digit_base_10_as_u8()
     }
 }

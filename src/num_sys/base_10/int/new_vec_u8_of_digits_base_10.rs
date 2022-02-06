@@ -1,18 +1,13 @@
 #[cfg(any(doc, test, doctest, feature = "std"))]
-use {
-    max_len_base_10_as_usize::MaxLenBase10AsUsize,
-    is_signed_trait::IsSigned,
-};
-
-use std::ops::Rem;
+use {is_signed_trait::IsSigned, max_len_base_10_as_usize::MaxLenBase10AsUsize};
 
 #[cfg(any(doc, test, doctest, feature = "bigint"))]
-use num_bigint::{BigUint, BigInt};
+use num_bigint::{BigInt, BigUint};
 
 #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
 #[cfg(any(doc, test, doctest, feature = "std"))]
 pub trait NewVecU8OfDigitsBase10Le {
-    fn new_vec_u8_of_digits_le(&self) -> Vec<u8>;   
+    fn new_vec_u8_of_digits_le(&self) -> Vec<u8>;
 }
 
 #[cfg(any(doc, test, doctest, feature = "std"))]
@@ -20,20 +15,21 @@ macro_rules! impl_new_vec_u8_of_digits_le {
     ($fn_name:ident) => {
         // TODO: consider implementing via sparse_capacity_mut + set_len
         fn $fn_name(&self) -> Vec<u8> {
-            let mut vec =
-                Vec::<u8>::with_capacity(Self::MAX_LEN_BASE_10_AS_USIZE - if Self::IS_SIGNED { 1 } else { 0 });
+            let mut vec = Vec::<u8>::with_capacity(
+                Self::MAX_LEN_BASE_10_AS_USIZE - if Self::IS_SIGNED { 1 } else { 0 },
+            );
             let mut q = *self;
             loop {
                 let (new_q, r) = (q / 10, q % 10);
                 q = new_q;
-                vec.push(
-                    if Self::IS_SIGNED {
-                        (r as i8).abs() as u8
-                    } else {
-                        r as u8
-                    }
-                );
-                if q == 0 { break; };
+                vec.push(if Self::IS_SIGNED {
+                    (r as i8).abs() as u8
+                } else {
+                    r as u8
+                });
+                if q == 0 {
+                    break;
+                };
             }
             vec
         }
