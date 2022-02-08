@@ -42,14 +42,16 @@ all = ["std", "bigint", "nightly"]
 std = []
 bigint = ["num-bigint"]
 nightly = ["adt_const_params", "negative_impls", "const_trait_impl", "decl_macro", "const_ops"]
-unimplemented = ["gen_associated_consts"]
+unimplemented = ["gen_assoc_consts"]
 
 adt_const_params = []
 negative_impls = []
 const_trait_impl = []
 decl_macro = []
 const_ops = []
-gen_associated_consts = []
+
+# https://github.com/rust-lang/rfcs/pull/1657
+gen_assoc_consts = []
 
 [package.metadata.docs.rs]
 features = ["all"]
