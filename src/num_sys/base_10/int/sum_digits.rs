@@ -1,5 +1,8 @@
 // Track generic associated constants (constants in generic contexts that depend
 // on generic type parameters) here: https://github.com/rust-lang/rfcs/pull/1657
+//
+// The implementation relying on "gen_assoc_consts" has been removed due to
+// maintainability concerns
 
 #[cfg(all(
     not(feature = "gen_assoc_consts"),
