@@ -1,34 +1,5 @@
-// The declaration below relies on https://github.com/rust-lang/rfcs/pull/1657
-#[cfg(all(
-    feature = "gen_assoc_consts",
-    any(doc, test, doctest, feature = "adt_const_params")
-))]
-pub trait SumDigits {
-    fn sum_digits<
-        Base,
-        Accumulator,
-        Modulo,
-        Output,
-        const BASE: Base,
-        const MODULO: Option<Modulo> = None,
-    >(
-        &self,
-    ) -> Output
-    where
-        Self: Sized,
-        (Self, Base, Accumulator, Modulo, Output): SumDigitsTypeTuple<
-            Number = Self,
-            Base = Base,
-            Accumulator = Accumulator,
-            OptModulo = Modulo,
-            Output = Output,
-        >,
-    {
-        <(Self, Base, Accumulator, Modulo, Output) as SumDigitsTypeTuple>::sum_digits::<BASE, MODULO>(
-            self,
-        )
-    }
-}
+// Track generic associated constants (constants in generic contexts that depend
+// on generic type parameters) here: https://github.com/rust-lang/rfcs/pull/1657
 
 #[cfg(all(
     not(feature = "gen_assoc_consts"),
